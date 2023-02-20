@@ -9,16 +9,16 @@
     "Yan01h (Hydra/Hydrated Dragon)"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/Yan01h/EdgeJump",
+    "sources": "https://github.com/Yan01h/EdgeJump"
   },
 
-  "license": "MIT",
-  "icon": "assets/modid/icon.png",
+  "license": "CC0-1.0",
+  "icon": "assets/edgejump/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [
+    "client": [
       "net.yan01h.edgejump.EdgeJump"
     ]
   },

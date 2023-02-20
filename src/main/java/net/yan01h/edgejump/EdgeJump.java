@@ -1,14 +1,60 @@
 package net.yan01h.edgejump;
 
-import net.fabricmc.api.ModInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.enums.SlabType;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.lwjgl.glfw.GLFW;
 
-public class EdgeJump implements ModInitializer {
-	public static final Logger LOGGER = LoggerFactory.getLogger("modid");
+public class EdgeJump implements ClientModInitializer {
+	public static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+
+	private static final KeyBinding EDGEJUMP_KEYBIND = new KeyBinding(
+			"key.edgejump.toggle_edge_jump",
+			InputUtil.Type.KEYSYM,
+			GLFW.GLFW_KEY_G,
+			"key.category.edgejump.keybinds"
+	);
+
+	public static boolean edgeJumpEnabled = false;
+	public static double movementThreshold = 0.1;
 
 	@Override
-	public void onInitialize() {
-		LOGGER.info("Hello Fabric world!");
+	public void onInitializeClient() {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			while (EDGEJUMP_KEYBIND.wasPressed()) {
+				edgeJumpEnabled = !edgeJumpEnabled;
+				String onOff = edgeJumpEnabled ? "On" : "Off";
+				client.player.sendMessage(new LiteralText("EdgeJump: " + onOff), true);
+			}
+		});
+
+		KeyBindingHelper.registerKeyBinding(EDGEJUMP_KEYBIND);
+	}
+
+	public static void onTick() {
+		if (!edgeJumpEnabled || CLIENT.player == null || CLIENT.player.isSneaking() ||
+				!CLIENT.player.isOnGround() || CLIENT.options.sneakKey.isPressed() ||
+				CLIENT.player.getVelocity().length() <= movementThreshold) {
+			return;
+		}
+		World world = CLIENT.player.getEntityWorld();
+		BlockPos pos = CLIENT.player.getBlockPos();
+		BlockState blockState = world.getBlockState(pos.down());
+		if (world.getBlockState(pos).getBlock() instanceof SlabBlock &&
+				world.getBlockState(pos).get(SlabBlock.TYPE) == SlabType.BOTTOM) {
+			blockState = world.getBlockState(pos);
+		}
+		if (blockState.getCollisionShape(world, pos.down()).isEmpty() && CLIENT.player.forwardSpeed > 0) {
+			CLIENT.player.jump();
+		}
 	}
 }
