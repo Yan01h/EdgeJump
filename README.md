@@ -1,9 +1,13 @@
-# Fabric Example Mod
+# EdgeJump Mod
 
-## Setup
+### What is this?
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+A mod for fabric that automatically jumps at the edge of a block, simple.
 
-## License
+### How to use
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+Install fabric and the mod and press g in game to toggle EdgeJump on or off. This key can be changed in the options.
+
+### Credit
+
+Wurst Client for the logic behind the edge detection.
