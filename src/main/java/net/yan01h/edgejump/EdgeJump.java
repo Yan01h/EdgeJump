@@ -39,7 +39,7 @@ public class EdgeJump implements ClientModInitializer {
 	}
 
 	public static void onTick() {
-		if (CLIENT.player == null && !edgeJumpEnabled)
+		if (CLIENT.player == null || !edgeJumpEnabled)
 			return;
 		if (!CLIENT.player.isOnGround() || CLIENT.options.jumpKey.isPressed())
 			return;
